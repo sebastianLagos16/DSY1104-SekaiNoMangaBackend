@@ -42,7 +42,7 @@ public class DataSeed implements CommandLineRunner {
         User admin = users.findByEmail("admin@sekai.cl").orElseGet(() -> {
             User u = new User();
             u.setEmail("admin@sekai.cl");
-            u.setPasswordHash(encoder.encode("Adminpass1234.."));
+            u.setPasswordHash(encoder.encode("123456.."));
             u.setNombre("Administrador");
             u.setTelefono("987654321");
             u.setRegion("RM");
@@ -62,7 +62,7 @@ public class DataSeed implements CommandLineRunner {
         User demo = users.findByEmail("user@sekai.cl").orElseGet(() -> {
             User u = new User();
             u.setEmail("user@sekai.cl");
-            u.setPasswordHash(encoder.encode("Userpass1234.."));
+            u.setPasswordHash(encoder.encode("123456."));
             u.setNombre("Usuario de prueba");
             u.setTelefono("912345678");
             u.setRegion("RM");
