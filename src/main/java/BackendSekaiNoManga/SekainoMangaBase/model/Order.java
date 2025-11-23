@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "orders") // Ojo: tabla "orders" para evitar la palabra reservada ORDER
+@Table(name = "orders") // tabla "orders" para evitar palabra reservada ORDER
 public class Order {
 
     @Id
@@ -25,10 +25,11 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Status status = Status.PENDING; // PENDING / CONFIRMED / CANCELLED
@@ -42,12 +43,15 @@ public class Order {
 
     @PrePersist
     public void prePersist() {
-        if (status == null)
+        if (status == null) {
             status = Status.PENDING;
-        if (createdAt == null)
+        }
+        if (createdAt == null) {
             createdAt = LocalDateTime.now();
-        if (total == null)
+        }
+        if (total == null) {
             total = BigDecimal.ZERO;
+        }
     }
 
     public enum Status {

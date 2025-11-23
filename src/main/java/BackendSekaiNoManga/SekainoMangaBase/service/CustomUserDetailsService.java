@@ -28,18 +28,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Set<Role> roles = Optional.ofNullable(u.getRoles()).orElse(Collections.emptySet());
         List<GrantedAuthority> auths = roles.stream()
-                // fuerza a String, con prefijo ROLE_ ya guardado en BD
+
                 .map(r -> new SimpleGrantedAuthority(r.getName().toString()))
                 .collect(Collectors.toList());
 
         return new org.springframework.security.core.userdetails.User(
                 u.getEmail(),
                 u.getPasswordHash(),
-                true,  // enabled (si no tienes boolean en User)
                 true,
                 true,
                 true,
-                auths
-        );
+                true,
+                auths);
     }
 }

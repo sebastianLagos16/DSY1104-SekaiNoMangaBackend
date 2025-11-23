@@ -25,7 +25,7 @@ public class DataSeed implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        // 1) Roles base (idempotente)
+        // 1) Roles base
         Role rAdmin = roles.findByName("ROLE_ADMIN").orElseGet(() -> {
             Role r = new Role();
             r.setName("ROLE_ADMIN");
@@ -42,27 +42,27 @@ public class DataSeed implements CommandLineRunner {
         User admin = users.findByEmail("admin@sekai.cl").orElseGet(() -> {
             User u = new User();
             u.setEmail("admin@sekai.cl");
-            u.setPasswordHash(encoder.encode("123456."));
+            u.setPasswordHash(encoder.encode("Adminpass1234.."));
             u.setNombre("Administrador");
             u.setTelefono("987654321");
             u.setRegion("RM");
             u.setComuna("Santiago");
-            u.setDireccion("Av. Siempre Viva 742");
+            u.setDireccion("Antonio varas 666");
             u.setCodigoPostal("8320000");
             return users.save(u);
         });
-        // asegurar roles (idempotente)
+        // asegurar roles
         if (!admin.getRoles().contains(rAdmin))
             admin.getRoles().add(rAdmin);
         if (!admin.getRoles().contains(rUser))
             admin.getRoles().add(rUser);
         users.save(admin);
 
-        // 3) Usuario demo
+        // Usuario de prueba
         User demo = users.findByEmail("user@sekai.cl").orElseGet(() -> {
             User u = new User();
             u.setEmail("user@sekai.cl");
-            u.setPasswordHash(encoder.encode("123456"));
+            u.setPasswordHash(encoder.encode("Userpass1234.."));
             u.setNombre("Usuario de prueba");
             u.setTelefono("912345678");
             u.setRegion("RM");

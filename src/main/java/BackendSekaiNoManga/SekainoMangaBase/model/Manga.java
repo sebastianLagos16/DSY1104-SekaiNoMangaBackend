@@ -3,6 +3,7 @@ package BackendSekaiNoManga.SekainoMangaBase.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 
 @Data
@@ -12,14 +13,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "mangas")
 public class Manga {
-
-  @PrePersist
-  public void prePersist() {
-    if (estado == null)
-      estado = Estado.ACTIVO;
-    if (stock == null)
-      stock = 0;
-  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +31,7 @@ public class Manga {
   @Column(nullable = false, length = 60)
   private String publisher;
 
+  @Builder.Default
   @NotNull
   @Min(0)
   @Column(nullable = false)
@@ -45,10 +39,12 @@ public class Manga {
 
   private String portadaUrl;
 
+  @Builder.Default
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
   private Estado estado = Estado.ACTIVO; // ACTIVO/OCULTO/DESCONTINUADO
 
+  @Builder.Default
   @Column(nullable = false)
   private boolean eliminado = false;
 
@@ -59,15 +55,27 @@ public class Manga {
   private String description;
 
   @Column(length = 50)
-  private String genre; // 👈 NUEVO
+  private String genre;
 
+  @Builder.Default
   @Column(name = "on_sale", nullable = false)
-  private boolean onSale = false; // 👈 NUEVO
+  private boolean onSale = false;
 
+  @Builder.Default
   @Column(name = "top_selling", nullable = false)
   private boolean topSelling = false;
 
   public enum Estado {
     ACTIVO, OCULTO, DESCONTINUADO
+  }
+
+  @PrePersist
+  public void prePersist() {
+    if (estado == null) {
+      estado = Estado.ACTIVO;
+    }
+    if (stock == null) {
+      stock = 0;
+    }
   }
 }

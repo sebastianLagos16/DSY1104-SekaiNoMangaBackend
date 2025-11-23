@@ -20,68 +20,65 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAdminController {
 
-    private final OrderRepository orderRepository;
+        private final OrderRepository orderRepository;
 
-    // -------- LISTAR TODOS LOS PEDIDOS (vista administrador) --------
-    @GetMapping
-    public List<AdminOrderDTO> findAll() {
-        return orderRepository.findAll().stream()
-                .sorted(Comparator.comparing(Order::getCreatedAt).reversed())
-                .map(this::toAdminDTO)
-                .toList();
-    }
-
-    // -------- CAMBIAR ESTADO DE UN PEDIDO (ADMIN) --------
-    @PatchMapping("/{id}/status")
-    public AdminOrderDTO updateStatus(
-            @PathVariable Long id,
-            @RequestBody @Valid UpdateOrderStatusDTO body) {
-
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Order not found"));
-
-        Order.Status newStatus;
-        try {
-            newStatus = Order.Status.valueOf(body.getStatus().toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid status: " + body.getStatus());
+        // Lista todos los pedidos ordenados por fecha de creacion (admin)
+        @GetMapping
+        public List<AdminOrderDTO> findAll() {
+                return orderRepository.findAll().stream()
+                                .sorted(Comparator.comparing(Order::getCreatedAt).reversed())
+                                .map(this::toAdminDTO)
+                                .toList();
         }
 
-        // Nota: aquí SOLO cambiamos el estado.
-        // La lógica de descuento de stock está en OrderService.confirm()
-        // cuando el propio usuario confirma su pedido.
-        order.setStatus(newStatus);
-        Order saved = orderRepository.save(order);
+        // cambia el estado de un pedido Desde el Dashboard del Admin no usado aun hasta
+        // implementar api de logistica
+        @PatchMapping("/{id}/status")
+        public AdminOrderDTO updateStatus(
+                        @PathVariable Long id,
+                        @RequestBody @Valid UpdateOrderStatusDTO body) {
 
-        return toAdminDTO(saved);
-    }
+                Order order = orderRepository.findById(id)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND, "Order not found"));
 
-    // -------- MAPEO A DTO ESPECIAL PARA ADMIN --------
-    private AdminOrderDTO toAdminDTO(Order order) {
-        var user = order.getUser();
+                Order.Status newStatus;
+                try {
+                        newStatus = Order.Status.valueOf(body.getStatus().toUpperCase());
+                } catch (IllegalArgumentException ex) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Invalid status: " + body.getStatus());
+                }
 
-        List<AdminOrderItemDTO> items = order.getItems().stream()
-                .map(oi -> new AdminOrderItemDTO(
-                        oi.getManga().getId(),
-                        oi.getManga().getMangaName(),
-                        oi.getQuantity(),
-                        oi.getUnitPrice().intValue() // unitPrice en DTO es int
-                ))
-                .toList();
+                order.setStatus(newStatus);
+                Order saved = orderRepository.save(order);
 
-        String customerName = user != null ? user.getNombre() : null;
-        String customerEmail = user != null ? user.getEmail() : null;
+                return toAdminDTO(saved);
+        }
 
-        return new AdminOrderDTO(
-                order.getId(),
-                order.getCreatedAt(),
-                order.getStatus().name(),
-                customerName,
-                customerEmail,
-                order.getTotal(),
-                items);
-    }
+        private AdminOrderDTO toAdminDTO(Order order) {
+                var user = order.getUser();
+
+                List<AdminOrderItemDTO> items = order.getItems().stream()
+                                .map(oi -> new AdminOrderItemDTO(
+                                                oi.getManga().getId(),
+                                                oi.getManga().getMangaName(),
+                                                oi.getQuantity(),
+                                                oi.getUnitPrice().intValue() // unitPrice en DTO es int
+                                ))
+                                .toList();
+
+                String customerName = user != null ? user.getNombre() : null;
+                String customerEmail = user != null ? user.getEmail() : null;
+
+                return new AdminOrderDTO(
+                                order.getId(),
+                                order.getCreatedAt(),
+                                order.getStatus().name(),
+                                customerName,
+                                customerEmail,
+                                order.getTotal(),
+                                items);
+        }
 }

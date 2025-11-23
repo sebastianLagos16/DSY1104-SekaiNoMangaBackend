@@ -2,7 +2,9 @@ package BackendSekaiNoManga.SekainoMangaBase.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -11,19 +13,28 @@ import java.util.*;
 @Entity
 @Table(name = "users")
 public class User {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true, nullable = false)
   private String email;
+
   @Column(nullable = false)
   private String passwordHash;
+
+  @Builder.Default
   private boolean enabled = true;
 
-  // Envios
-  private String nombre, telefono, region, comuna, direccion, codigoPostal;
+  private String nombre;
+  private String telefono;
+  private String region;
+  private String comuna;
+  private String direccion;
+  private String codigoPostal;
 
+  @Builder.Default
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
