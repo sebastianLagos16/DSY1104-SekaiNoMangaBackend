@@ -40,7 +40,7 @@ public class AuthController {
     authService.changePassword(auth, dto);
   }
 
-  // === LOGIN JWT ===
+  // Login JWT
   @PostMapping("/login")
   public LoginResponse login(@RequestBody LoginRequest req) {
     User u = users.findByEmail(req.getEmail())
@@ -53,7 +53,7 @@ public class AuthController {
 
     UserDetails userDetails = org.springframework.security.core.userdetails.User
         .withUsername(u.getEmail())
-        // aquí también usamos el hash que ya está en la BD
+
         .password(u.getPasswordHash())
         .authorities(u.getRoles().stream().map(Role::getName).toArray(String[]::new))
         .build();
@@ -68,7 +68,7 @@ public class AuthController {
         u.getRoles().stream().map(Role::getName).toList());
   }
 
-  // === /me usando el Authentication seteado por el filtro JWT ===
+  // usando el Authentication seteado por el filtro JWT
   @GetMapping("/me")
   public MeDTO me(Authentication auth) {
     if (auth == null || auth.getName() == null) {
@@ -87,7 +87,7 @@ public class AuthController {
     return dto;
   }
 
-  // === DTOs simples ===
+  // dtos simples
   @Data
   public static class LoginRequest {
     private String email;

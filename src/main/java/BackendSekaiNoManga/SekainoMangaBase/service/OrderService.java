@@ -27,7 +27,7 @@ public class OrderService {
     private final MangaRepository mangaRepository;
     private final UserRepository userRepository;
 
-    // -------- CREATE (desde carrito) --------
+    // Crea una orden
     @Transactional
     public OrderDTO create(CreateOrderDTO dto, String userEmail) {
         if (dto.items() == null || dto.items().isEmpty()) {
@@ -81,7 +81,7 @@ public class OrderService {
         return toDTO(saved);
     }
 
-    // -------- LISTAR MIS ÓRDENES --------
+    // Lista las ordenes de un usuario
     @Transactional(readOnly = true)
     public List<OrderDTO> findByUser(String userEmail) {
         return orderRepository.findByUserEmailOrderByCreatedAtDesc(userEmail)
@@ -90,7 +90,7 @@ public class OrderService {
                 .toList();
     }
 
-    // -------- CONFIRMAR (descuenta stock) --------
+    // confirma una compra y descuenta stock
     @Transactional
     public OrderDTO confirm(Long id, String userEmail) {
         Order order = orderRepository.findById(id)
@@ -136,7 +136,7 @@ public class OrderService {
         return toDTO(saved);
     }
 
-    // -------- CANCELAR (NO toca stock) --------
+    // Cancelar una Compra
     @Transactional
     public OrderDTO cancel(Long id, String userEmail) {
         Order order = orderRepository.findById(id)
@@ -158,7 +158,7 @@ public class OrderService {
         return toDTO(saved);
     }
 
-    // -------- MAPEO A DTO --------
+    // Mapeo a DTO
     public OrderDTO toDTO(Order order) {
         List<OrderDTO.Item> items = order.getItems().stream()
                 .map(oi -> new OrderDTO.Item(

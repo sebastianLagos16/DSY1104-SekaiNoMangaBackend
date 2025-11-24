@@ -12,10 +12,9 @@ import java.util.List;
 
 public interface MangaRepository extends JpaRepository<Manga, Long> {
 
-  // Catálogo público
+
   List<Manga> findByEliminadoFalseAndEstadoAndStockGreaterThan(Estado estado, int minStock);
 
-  // ↓↓↓ ATÓMICOS PARA CARRITO ↓↓↓
   @Modifying
   @Transactional
   @Query("""

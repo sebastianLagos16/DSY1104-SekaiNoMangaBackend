@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    // Para "Mis Compras"
+    // Lista las ordenes de un usuario
     List<Order> findByUserEmailOrderByCreatedAtDesc(String email);
 }

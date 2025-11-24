@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-  // para login / lookup
+  // para login
   Optional<User> findByEmail(String email);
 
-  // el que te falta en AuthService.register(...)
+  // para registro
   boolean existsByEmail(String email);
 }

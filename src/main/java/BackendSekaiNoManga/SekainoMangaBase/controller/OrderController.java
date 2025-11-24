@@ -26,7 +26,7 @@ public class OrderController {
         return orderService.create(dto, email);
     }
 
-    // "Mis compras"
+    // Mis compras (vista de usuario)
     @GetMapping("/me")
     public List<OrderDTO> myOrders(Authentication auth) {
         String email = auth.getName();

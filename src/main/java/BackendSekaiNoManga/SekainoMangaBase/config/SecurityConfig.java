@@ -57,27 +57,21 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(auth -> auth
-                        // recursos estáticos
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 
-                        // swagger / openapi
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**")
                         .permitAll()
 
-                        // auth pública
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
 
-                        // catálogo público
                         .requestMatchers(HttpMethod.GET, "/api/mangas/**").permitAll()
 
-                        // resto de /api/auth/** requiere login
                         .requestMatchers("/api/auth/**").authenticated()
 
-                        // zona admin / endpoints protegidos
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/orders/me").hasAnyRole("USER", "ADMIN")
@@ -85,7 +79,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/me").hasAnyRole("USER", "ADMIN")
 
-                        // cualquier otra request autenticada
                         .anyRequest().authenticated());
 
         // Solo JWT, sin Basic
