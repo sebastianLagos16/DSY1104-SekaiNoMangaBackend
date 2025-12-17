@@ -15,7 +15,8 @@ public class CorsConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowedOrigins(
-        List.of("http://98.80.144.178:3000", "http://98.80.144.178:5173"));
+        List.of("http://3.221.199.244:3000", 
+                "http://3.221.199.244:5173"));
     config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);
